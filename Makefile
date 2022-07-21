@@ -3,7 +3,7 @@ BIN_DIR ?= bin
 
 SRCS = $(shell git ls-files '*.go' | grep -v '^vendor/')
 	
-build:
+build: generate manifests
 	GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(BIN_NAME) src/main.go
 
 manifests:

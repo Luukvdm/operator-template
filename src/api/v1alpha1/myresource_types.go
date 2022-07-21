@@ -1,3 +1,7 @@
+// Package v1alpha1 contains API Schema definitions for the myresource v1alpha1 API group
+//+kubebuilder:object:generate=true
+//+groupName=myresource.luukvdm.github.com
+
 package v1alpha1
 
 import (
@@ -7,8 +11,8 @@ import (
 )
 
 type MyResourceSpec struct {
-	FieldA string `json:"field_a,omitempty"`
-	FieldB string `json:"field_b,omitempty"`
+	FieldA string `json:"fielda,omitempty"`
+	FieldB string `json:"fieldb,omitempty"`
 }
 
 type MyResourceStatus struct {
@@ -37,7 +41,7 @@ func init() {
 	// TODO clean up
 
 	// GroupVersion is group version used to register these objects
-	groupVersion := schema.GroupVersion{Group: "application.sample.ibm.com", Version: "v1alpha1"}
+	groupVersion := schema.GroupVersion{Group: "myresource.luukvdm.github.com", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	schemeBuilder := &scheme.Builder{GroupVersion: groupVersion}

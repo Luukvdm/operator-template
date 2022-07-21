@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: my-role
+rules:
+- apiGroups:
+  - myresource.luukvdm.github.com
+  resources:
+  - myresource
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - myresource.luukvdm.github.com
+  resources:
+  - myresource/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - myresource.luukvdm.github.com
+  resources:
+  - myresource/status
+  verbs:
+  - get
+  - patch
+  - update

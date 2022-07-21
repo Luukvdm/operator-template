@@ -14,13 +14,14 @@ type MyReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=database.sample.third.party,resources=databases,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=database.sample.third.party,resources=databases/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=database.sample.third.party,resources=databases/finalizers,verbs=update
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource/finalizers,verbs=update
+
 func (reconciler *MyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 
-	log.Info("Reconcile started for Database CRD")
+	log.Info("Reconcile started for MyResource CRD")
 
 	return ctrl.Result{}, nil
 }

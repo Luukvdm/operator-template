@@ -1,0 +1,4 @@
+FROM scratch AS final
+COPY bin/operator-template /
+ENTRYPOINT ["/myoperator"]
+

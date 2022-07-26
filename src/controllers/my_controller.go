@@ -9,16 +9,16 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-type MyReconciler struct {
+type MyResourceReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresource/finalizers,verbs=update
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresources,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresources/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=myresource.luukvdm.github.com,resources=myresources/finalizers,verbs=update
 
-func (reconciler *MyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (reconciler *MyResourceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 
 	log.Info("Reconcile started for MyResource CRD")
@@ -26,7 +26,7 @@ func (reconciler *MyReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	return ctrl.Result{}, nil
 }
 
-func (r *MyReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *MyResourceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&v1alpha1.MyResource{}).
 		Complete(r)

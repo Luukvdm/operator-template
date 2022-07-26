@@ -1,13 +1,7 @@
-// Package v1alpha1 contains API Schema definitions for the myresource v1alpha1 API group
-//+kubebuilder:object:generate=true
-//+groupName=myresource.luukvdm.github.com
-
 package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
 type MyResourceSpec struct {
@@ -38,17 +32,5 @@ type MyResourceList struct {
 }
 
 func init() {
-	// TODO clean up
-
-	// GroupVersion is group version used to register these objects
-	groupVersion := schema.GroupVersion{Group: "myresource.luukvdm.github.com", Version: "v1alpha1"}
-
-	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
-	schemeBuilder := &scheme.Builder{GroupVersion: groupVersion}
-
-	// AddToScheme adds the types in this group-version to the given scheme.
-	addToScheme := schemeBuilder.AddToScheme
-	var _ = addToScheme
-
-	schemeBuilder.Register(&MyResource{}, &MyResourceList{})
+	SchemeBuilder.Register(&MyResource{}, &MyResourceList{})
 }

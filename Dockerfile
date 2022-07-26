@@ -11,5 +11,5 @@ RUN make install-tools
 RUN make build
 
 FROM scratch AS final
-COPY --from=build /myoperator/bin/operator-template /
-ENTRYPOINT ["/myoperator"]
+COPY --from=build /myoperator/bin/otemplate /otemplate
+ENTRYPOINT ["/otemplate"]

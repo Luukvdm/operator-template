@@ -1,4 +1,4 @@
 FROM scratch AS final
-COPY bin/operator-template /
-ENTRYPOINT ["/myoperator"]
+COPY bin/otemplate /
+ENTRYPOINT ["/otemplate"]
 

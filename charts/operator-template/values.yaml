@@ -5,7 +5,7 @@ resources: {}
 nodeSelector: {}
 
 image:
-  repository: ghcr.io/luukvdm/operator-template
+  repository: ghcr.io/luukvdm/otemplate
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""

@@ -3,6 +3,7 @@ fullnameOverride: ""
 imagePullSecrets: []
 resources: {}
 nodeSelector: {}
+serviceAccountName: "my-acc"
 
 image:
   repository: ghcr.io/luukvdm/otemplate

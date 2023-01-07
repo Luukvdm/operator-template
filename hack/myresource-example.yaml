@@ -1,0 +1,7 @@
+apiVersion: "myresource.luukvdm.github.com/v1alpha1"
+kind: MyResource
+metadata:
+  name: myresource-example-object
+spec:
+  fielda: "field-a test123"
+  fieldb: "field-b test123"

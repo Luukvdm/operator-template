@@ -9,7 +9,7 @@ SRCS = $(shell git ls-files '*.go' | grep -v '^vendor/')
 GO_BIN = $(shell go env GOPATH)/bin
 
 kind-install: image kind-load helm-install
-kind-reinstall: uninstall kind-install
+kind-reinstall: helm-uninstall kind-install
 kind-load:
 	kind load docker-image $(IMG_NAME)
 
@@ -17,7 +17,7 @@ install: image helm-install
 helm-install:
 	helm install $(CHART_RELEASE_NAME) charts/operator-template --set image.repository=$(IMG_REPO),image.tag=$(VERSION)
 
-uninstall:
+helm-uninstall:
 	helm delete $(CHART_RELEASE_NAME)
 	
 build: generate.go
@@ -32,7 +32,7 @@ image.local:
 	# Compiling the go code outside of the container gives a huge speed boost
 	docker build -t $(IMG_NAME) --file=hack/Dockerfile.local .
 
-clean: uninstall
+clean: helm-uninstall
 	go clean
 	rm -rf $(BIN_DIR)
 	docker image rm $(IMG_NAME)

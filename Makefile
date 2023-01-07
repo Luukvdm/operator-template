@@ -1,15 +1,25 @@
 BIN_NAME ?= otemplate
 BIN_DIR ?= bin
 # IMG_NAME ?= otemplate
-VERSION ?= v0.0.1 # TODO don't hardcode version
-IMG_NAME ?= ghcr.io/luukvdm/otemplate:$(VERSION)
+VERSION ?= v0.0.2 # TODO don't hardcode version
+IMG_REPO ?= ghcr.io/luukvdm/otemplate
+IMG_NAME ?= $(IMG_REPO):$(VERSION)	
 
 SRCS = $(shell git ls-files '*.go' | grep -v '^vendor/')
 GO_BIN = $(shell go env GOPATH)/bin
 
-install: image
-	# kind load docker-image $(IMG_NAME)
-	helm install otemplate charts/operator-template
+kind-install: image kind-load helm-install
+kind-reinstall: uninstall kind-install
+kind-load:
+	kind load docker-image $(IMG_NAME)
+
+
+install: image helm-install
+helm-install:
+	helm install otemplate charts/operator-template --set image.repository=$(IMG_REPO),image.tag=$(VERSION)
+
+uninstall:
+	helm delete otemplate
 	
 build: generate manifests
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(BIN_NAME) src/main.go

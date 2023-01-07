@@ -2,9 +2,14 @@ package cmd
 
 import (
 	"github.com/Luukvdm/operator-template/src/mgr"
+	"github.com/go-logr/logr"
+	"github.com/go-logr/zapr"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"k8s.io/client-go/rest"
 	"log"
+	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
@@ -46,7 +51,11 @@ This template uses:
 }
 
 func run(args Args) {
-	log.Println("starting operator-template")
+	l := createZapLogger(args.isDebug)
+	l.V(int(zap.InfoLevel)).Info("starting operator-template")
+	if args.isDebug {
+		l.V(int(zap.DebugLevel)).Info("running in debug mode")
+	}
 
 	inCluster := args.insideCluster
 
@@ -62,6 +71,33 @@ func run(args Args) {
 		log.Fatalln("failed to create cluster config:\n%w", err)
 	}
 
-	mgr.StartManager(cnf)
+	mgr.StartManager(l, cnf)
 
+}
+
+func createZapLogger(isDebug bool) logr.Logger {
+	var zLogger *zap.Logger
+	var err error
+	if isDebug {
+		core := zapcore.NewCore(
+			zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()),
+			os.Stderr,
+			zap.DebugLevel,
+		)
+		zLogger = zap.New(core)
+	} else {
+		core := zapcore.NewCore(
+			zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+			os.Stderr,
+			zap.InfoLevel,
+		)
+		zLogger = zap.New(core)
+	}
+	if err != nil {
+		log.Fatalf("failed to create logger:\n%s", err)
+	}
+
+	defer zLogger.Sync()
+
+	return zapr.NewLogger(zLogger)
 }

@@ -4,8 +4,6 @@ import (
 	"github.com/Luukvdm/operator-template/src/api/v1alpha1"
 	"github.com/Luukvdm/operator-template/src/controllers"
 	"github.com/go-logr/logr"
-	"github.com/go-logr/zapr"
-	"go.uber.org/zap"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -16,12 +14,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 )
 
-func StartManager(cnf *rest.Config) {
+func StartManager(l logr.Logger, cnf *rest.Config) {
 	scheme := runtime.NewScheme()
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(v1alpha1.AddToScheme(scheme))
-
-	logger := createLogger()
 
 	mgr, err := ctrl.NewManager(cnf, ctrl.Options{
 		Scheme: scheme,
@@ -30,10 +26,10 @@ func StartManager(cnf *rest.Config) {
 		// HealthProbeBindAddress: probeAddr,
 		LeaderElection: false,
 		// LeaderElectionID:       "",
-		Logger: logger,
+		Logger: l,
 	})
 	if err != nil {
-		logger.Error(err, "unable to start manager")
+		l.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
 
@@ -59,13 +55,4 @@ func StartManager(cnf *rest.Config) {
 		mgr.GetLogger().Error(err, "failed to start manager")
 		os.Exit(1)
 	}
-}
-
-func createLogger() logr.Logger {
-	zLogger, err := zap.NewDevelopment()
-	if err != nil {
-		log.Fatalf("failed to instantiate logger:\n%s", err)
-	}
-	defer zLogger.Sync()
-	return zapr.NewLogger(zLogger)
 }

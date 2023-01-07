@@ -1,6 +1,6 @@
 BIN_NAME ?= otemplate
 BIN_DIR ?= bin
-# IMG_NAME ?= otemplate
+CHART_RELEASE_NAME ?= otemplate
 VERSION ?= v0.0.2 # TODO don't hardcode version
 IMG_REPO ?= ghcr.io/luukvdm/otemplate
 IMG_NAME ?= $(IMG_REPO):$(VERSION)	
@@ -16,10 +16,10 @@ kind-load:
 
 install: image helm-install
 helm-install:
-	helm install otemplate charts/operator-template --set image.repository=$(IMG_REPO),image.tag=$(VERSION)
+	helm install $(CHART_RELEASE_NAME) charts/operator-template --set image.repository=$(IMG_REPO),image.tag=$(VERSION)
 
 uninstall:
-	helm delete otemplate
+	helm delete $(CHART_RELEASE_NAME)
 	
 build: generate manifests
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(BIN_NAME) src/main.go
@@ -36,8 +36,7 @@ image.local:
 manifests:
 	$(GO_BIN)/controller-gen rbac:roleName=my-role crd paths="./..." output:dir=./charts/operator-template/templates
 
-clean:
-	helm delete otemplate
+clean: uninstall
 	go clean
 	rm -rf $(BIN_DIR)
 	docker image rm $(IMG_NAME)

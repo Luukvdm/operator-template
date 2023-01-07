@@ -13,7 +13,6 @@ kind-reinstall: uninstall kind-install
 kind-load:
 	kind load docker-image $(IMG_NAME)
 
-
 install: image helm-install
 helm-install:
 	helm install $(CHART_RELEASE_NAME) charts/operator-template --set image.repository=$(IMG_REPO),image.tag=$(VERSION)
@@ -21,7 +20,7 @@ helm-install:
 uninstall:
 	helm delete $(CHART_RELEASE_NAME)
 	
-build: generate manifests
+build: generate.go
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(BIN_NAME) src/main.go
 
 image:
@@ -33,9 +32,6 @@ image.local:
 	# Compiling the go code outside of the container gives a huge speed boost
 	docker build -t $(IMG_NAME) --file=hack/Dockerfile.local .
 
-manifests:
-	$(GO_BIN)/controller-gen rbac:roleName=my-role crd paths="./..." output:dir=./charts/operator-template/templates
-
 clean: uninstall
 	go clean
 	rm -rf $(BIN_DIR)
@@ -44,8 +40,11 @@ clean: uninstall
 fmt:
 	gofmt -s -l -w $(SRCS)
 
-generate:
+generate.manifests:
+	$(GO_BIN)/controller-gen rbac:roleName=my-role crd paths="./..." output:dir=./charts/operator-template/templates
+generate.go:
 	$(GO_BIN)/controller-gen object paths=./...
+generate: generate.go generate.manifests
 
 install-tools:
 	go install sigs.k8s.io/controller-tools/cmd/controller-gen@latest

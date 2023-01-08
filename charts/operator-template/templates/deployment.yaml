@@ -31,4 +31,23 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        ports:
+        - name: health-probes
+          containerPort: 8081
+          hostPort: 8081
+        - name: metrics
+          containerPort: 8080
+          hostPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: health-probes
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: health-probes
+          initialDelaySeconds: 3
+          periodSeconds: 3
 status: {}

@@ -20,16 +20,23 @@ func StartManager(l logr.Logger, cnf *rest.Config) {
 	utilruntime.Must(v1alpha1.AddToScheme(scheme))
 
 	mgr, err := ctrl.NewManager(cnf, ctrl.Options{
-		Scheme: scheme,
-		// MetricsBindAddress:     metricsAddr,
-		Port: 9445,
-		// HealthProbeBindAddress: probeAddr,
-		LeaderElection: false,
-		// LeaderElectionID:       "",
-		Logger: l,
+		Scheme:                 scheme,
+		HealthProbeBindAddress: "0.0.0.0:8081",
+		MetricsBindAddress:     "0.0.0.0:8080",
+		Port:                   9445,
+		LeaderElection:         false,
+		Logger:                 l,
 	})
 	if err != nil {
 		l.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
+
+	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
+		mgr.GetLogger().Error(err, "failed to set up health check")
+	}
+	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
+		mgr.GetLogger().Error(err, "failed to set up ready check")
 		os.Exit(1)
 	}
 
@@ -38,14 +45,6 @@ func StartManager(l logr.Logger, cnf *rest.Config) {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		mgr.GetLogger().Error(err, "failed to create controller")
-		os.Exit(1)
-	}
-
-	if err := mgr.AddHealthzCheck("healtz", healthz.Ping); err != nil {
-		mgr.GetLogger().Error(err, "failed to set up health check")
-	}
-	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-		mgr.GetLogger().Error(err, "failed to set up ready check")
 		os.Exit(1)
 	}
 

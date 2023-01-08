@@ -8,7 +8,7 @@ IMG_NAME ?= $(IMG_REPO):$(VERSION)
 SRCS = $(shell git ls-files '*.go' | grep -v '^vendor/')
 GO_BIN = $(shell go env GOPATH)/bin
 
-kind-install: image kind-load helm-install
+kind-install: image.local kind-load helm-install
 kind-reinstall: helm-uninstall kind-install
 kind-load:
 	kind load docker-image $(IMG_NAME)
@@ -27,7 +27,7 @@ image:
 	# rm $(BIN_DIR)/$(BIN_NAME)
 	docker build -t $(IMG_NAME) .
 
-image.local:
+image.local: build
 	# This goal builds an image with the binary from the bin folder
 	# Compiling the go code outside of the container gives a huge speed boost
 	docker build -t $(IMG_NAME) --file=hack/Dockerfile.local .

@@ -12,6 +12,11 @@ Build the project and install the helm chart for the current context:
 make install
 ```
 
+Just build the source code:
+```
+make build
+```
+
 Install on a kind cluster, beside doing a normal install, this also loads the image onto the cluster:
 ```sh
 make kind-install
@@ -22,7 +27,6 @@ make kind-install
 The custom resource definition yaml, role yaml and Go copy functions for the resource are generated.
 You can use these make goals to (re)generate them:
 ```sh
-make install-tools
 make generate
 ```
 

@@ -7,7 +7,6 @@ COPY go.sum .
 RUN go mod download
 
 COPY . /myoperator
-RUN make install-tools
 RUN make build
 
 FROM scratch AS final

@@ -7,6 +7,12 @@ and [Kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) generate are t
 
 ### Building and installing
 
+Build the project:
+```sh
+# Also generates the required code with `go generate ./...`
+BIN_DIR=./dist make build
+```
+
 Build the project and install the helm chart for the current context:
 ```sh
 make install
@@ -16,16 +22,6 @@ Install on a kind cluster, beside doing a normal install, this also loads the im
 ```sh
 make kind-install
 ```
-
-### Code Generation
-
-The custom resource definition yaml, role yaml and Go copy functions for the resource are generated.
-You can use these make goals to (re)generate them:
-```sh
-make install-tools
-make generate
-```
-
 ## Dependencies
 
 ### Manager

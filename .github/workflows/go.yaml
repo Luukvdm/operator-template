@@ -19,5 +19,9 @@ jobs:
         run: go install ./...
       - name: Build
         run: go build -v ./...
+      - name: Verify Generate
+        run: |
+          make generate
+          git diff --quiet
       - name: Test
         run: go test ./...
